@@ -1,7 +1,7 @@
-import { createClient } from 'contentful'
 import Image from 'next/image'
-import { documentToReactComponents } from '@contentful/rich-text-react-renderer'
+import { createClient } from 'contentful'
 import { BLOCKS, INLINES } from '@contentful/rich-text-types'
+import { documentToReactComponents } from '@contentful/rich-text-react-renderer'
 
 const { CONTENTFUL_SPACE, CONTENTFUL_ACCESS_TOKEN } = process.env;
 
@@ -23,7 +23,7 @@ export const getStaticPaths = async () => {
 
     return {
         paths,
-        fallback: false // it'll show 404 page not empty
+        fallback: false
     }
 }
 
@@ -41,35 +41,36 @@ export const getStaticProps = async ({ params }) => {
 }
 
 const renderOptions = {
-  renderNode: {
-    [INLINES.EMBEDDED_ENTRY]: (node, children) => {
-      // target the contentType of the EMBEDDED_ENTRY to display as you need
-      if (node.data.target.sys.contentType.sys.id === "blogPost") {
-        return (
-          <a href={`/blog/${node.data.target.fields.slug}`}>            {node.data.target.fields.title}
-          </a>
-        );
-      }
-    },
+    renderNode: {
+        [INLINES.EMBEDDED_ENTRY]: (node, children) => {
+        // target the contentType of the EMBEDDED_ENTRY to display as you need
+            if (node.data.target.sys.contentType.sys.id === "blogPost") {
+                return (
+                    <a href={`/blog/${node.data.target.fields.slug}`}>            
+                        {node.data.target.fields.title}
+                    </a>
+                );
+            }
+        },
 
-    [BLOCKS.EMBEDDED_ASSET]: (node, children) => {
-      return (
-        <Image
-            src={`https://${node.data.target.fields.file.url}`}
-            height={node.data.target.fields.file.details.image.height / 10}
-            width={node.data.target.fields.file.details.image.width / 10}
-            alt={node.data.target.fields.title}
-            title={node.data.target.fields.title}
-        />
-      );
+        [BLOCKS.EMBEDDED_ASSET]: (node, children) => {
+            const { data : { target : { fields : { file, title } } } } = node;
+            console.log(file, title)
+            return (
+                <img
+                    src={ `https:${ file.url }`}
+                    height={ file.details.image.height / 10}
+                    width={ file.details.image.width / 10}
+                    alt={node.data.target.fields.title}
+                    title={node.data.target.fields.title}
+                />
+            );
+        },
     },
-  },
 };
 
 const BlogDetail = ({ post }) => {
-    console.log(post)
     const { title, content, thumbnail } = post.fields;
-    const { id, createAt }  = post.sys;
     return (
         <div>
             {/* <Image src = { 'https:' + thumbnail.fields.file.url } 
