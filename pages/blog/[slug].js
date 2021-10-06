@@ -57,7 +57,7 @@ const renderOptions = {
             const { data : { target : { fields : { file, title } } } } = node;
             console.log(file, title)
             return (
-                <img
+                <Image
                     src={ `https:${ file.url }`}
                     height={ file.details.image.height / 10}
                     width={ file.details.image.width / 10}
