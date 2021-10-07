@@ -2,14 +2,15 @@ import React from 'react'
 import Link from 'next/link'
 
 const BlogList = ({ post }) => {
-    const { title, slug, thumbnail } = post.fields
+    const { title, slug } = post.fields
 
     return (
-        <div>
+        <>
             <Link passHref href = { `/blog/${ slug }` }>
-                <p>{ title }</p>
+                <p style = {{ cursor : "pointer" }}>{ title }</p>
             </Link>
-        </div>
+        </>
+        
     )
 }
 
