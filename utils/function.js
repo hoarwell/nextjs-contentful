@@ -19,7 +19,4 @@ export const getPost = async (slug) => {
         'fields.slug': slug
     })
     if(items.length > 0) return items[0]
-    if (typeof window !== "undefined") {
-        window.history.push('../404')
-    }
 }

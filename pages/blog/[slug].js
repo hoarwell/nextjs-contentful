@@ -1,6 +1,6 @@
 import { getPost } from '../../utils/function';
 import { ContentRender } from '../../utils/renderer';
-import Router from 'next/router'
+import { useState } from 'react';
 
 export const getServerSideProps = async (context) => {
     const slug = context.query.slug;
@@ -9,10 +9,11 @@ export const getServerSideProps = async (context) => {
     return {
         redirect: {
                 permanent: false,
-                destination: '../404'
+                destination: '/404'
             }
         }
     }
+    
     return {
         props: {
             post,
@@ -21,11 +22,17 @@ export const getServerSideProps = async (context) => {
 }
 
 const BlogDetail = ({ post }) => {
+    const [dark, setDark] = useState(false);
     const { title, content, thumbnail } = post.fields;
     const { createdAt, id } = post.sys
+    
+    const handleClick = () => {
+        setDark(!dark);
+    }
     return (
-        <div>
+        <>
             <div className = "post-container">
+                <button onClick = { handleClick }>dark</button>
                 <p className = "post-title">{ title }</p>
                 <p className = "post-date">
                     <small>
@@ -36,7 +43,15 @@ const BlogDetail = ({ post }) => {
                     <ContentRender content = { content } />
                 </div>
             </div>
-        </div>
+            <style jsx>
+            {`
+                .post-container {
+                    background-color: ${ dark ? "black" : "initial" };
+                    color: ${ dark ? "white" : "black" }
+                }
+            `}
+            </style>
+        </>
     )
 }
 
